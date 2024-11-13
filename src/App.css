@@ -1,0 +1,45 @@
+/* Contenedor principal que envuelve todo el contenido */
+body, html {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Contenido principal para ocupar el espacio antes del footer */
+  .main-content {
+    flex: 1;
+  }
+  
+  /* Footer fijo en la parte inferior */
+  footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 20px 0;
+    font-size: 14px;
+  }
+
+  footer a {
+    color: #fff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  
+  /* Cambiar color al pasar el cursor por encima */
+  footer a:hover {
+    color: #f0a500; /* Color amarillo dorado */
+  }
+  
+  /* Links del footer */
+  footer .social-links a {
+    color: #fff;
+    margin: 0 10px;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  
+  footer .social-links a:hover {
+    color: #f0a500; /* Cambia el color al pasar el cursor */
+  }
+  

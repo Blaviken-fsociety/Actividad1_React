@@ -9,6 +9,7 @@ function App() {
   const [id,setid]=useState('')
   const [error,setError]=useState(null)
   const [modoEdicion,setModoEdicion]=useState(false)
+  
   useEffect(()=>{
     const obtenerDatos= async() => {
       
@@ -37,6 +38,9 @@ function App() {
           ...lista,
           {id:dato.id,...nuevoUsuario}
         ])
+        setNombre('')
+        setApellido('')
+        setId('')
       } catch (error) {
         console.log(error);
       }
@@ -48,18 +52,45 @@ function App() {
       const db=firebase.firestore()
       await db.collection('usuarios').doc(id).delete()
       const listaFiltrada=lista.filter((item)=>item.id!==id)
-      setLista(listaFiltradapt)
+      setLista(listaFiltrada)
     } catch (error) {
       console.log(error);
     }
   }
 
+  //Editar
+  const editar=(user)=>{
+    setModoEdicion(true)
+    setNombre(user.nombre)
+    setApellido(user.apellido)
+    setid(user.id)
+  }
+
+  //Editar Datos
+  const editarDatos=async(e)=>{
+    e.preventDefault()
+    if(!nombre.trim()) return alert("Falta el Nombre")
+    if(!apellido.trim()) return alert("Falta el Apellido")
+      try {
+        const db=firebase.firestore()
+        await db.collection('usuarios').doc(id).update({nombre, apellido})
+        const listaEditada=lista.map(user=>user.id===id ? {id,nombre,apellido}:user)
+        setLista(listaEditada)
+        setModoEdicion(false)
+        setNombre('')
+        setApellido('')
+        setId('')
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
   return (
     <div className='container'>
       <div className="row">
         <div className="col-12">
-          <h1 className='text-center'>Registro de usuarios</h1>
-          <form onSubmit={guardarDatos}>
+          <h1 className='text-center'>{modoEdicion ? 'Editando Usuario':'Registro de Usuarios'}</h1>
+          <form onSubmit={modoEdicion ? editarDatos : guardarDatos}>
             <input type="text" placeholder='Ingrese su Nombre'className='form-control mb-2'
             onChange={(e)=>setNombre(e.target.value)}
             value={nombre}
@@ -71,7 +102,10 @@ function App() {
             />
 
             <div className='d-grid gap-2'>
-            <button type='submit' className='btn btn-primary'>Registrar</button>
+            {
+              modoEdicion ? <button type='submit' className='btn btn-success'>Editar</button>:
+              <button type='submit' className='btn btn-primary'>Registrar</button>
+            }
             </div>
           </form>
         </div>
@@ -83,7 +117,7 @@ function App() {
                 className='list-group-item' 
                 key={user.id}>{user.nombre} {user.apellido}
                 <button onClick={()=>eliminarDato(user.id)} className='btn btn-outline-danger float-end me-2'>Eliminar</button>
-                <button className='btn btn-outline-warning float-end me-2'>Editar</button>
+                <button onClick={()=>editar(user)} className='btn btn-outline-warning float-end me-2'>Editar</button>
                 </li>))
             }
           </ul>
